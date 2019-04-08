@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import config.DB;
+import crypt.BCrypt;
+import crypt.SHA256;
 
 public class MemberDAO {
 	
@@ -194,6 +196,215 @@ public class MemberDAO {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public String loginCheck(MemberVO vo) {
+		String result = "";
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DB.dbConn();
+			String sql = "SELECT * FROM member WHERE userid=? and passwd=?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, vo.getUserid());
+			pstmt.setString(2, vo.getPasswd());
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				result = rs.getString("name") + "님 환영합니다.";
+			} else {
+				result = "로그인 실패";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(rs != null) rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			try {
+				if(pstmt != null) pstmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			try {
+				if(conn != null) conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return result;
+	}
+	
+	// bcrypt 방식의 비밀번호 암호화 코드
+	public int insertBcrypt(MemberVO vo) {
+		int rows = 0;
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			conn = DB.dbConn();
+			StringBuilder sql = new StringBuilder();
+			sql.append("INSERT INTO MEMBER ");
+			sql.append("(userid, passwd, name) VALUES ");
+			sql.append("(?,?,?)");
+			pstmt = conn.prepareStatement(sql.toString());
+			pstmt.setString(1, vo.getUserid());
+			// 실행할 때마다 암호화키가 변경됨
+			// BCrypt.hashpw(암호화할 평문, 암호화키)
+			String passwd = 
+					BCrypt.hashpw(vo.getPasswd(), BCrypt.gensalt());
+			System.out.println("평문 : " + vo.getPasswd());
+			System.out.println("암호화된 텍스트 : " + passwd);
+			pstmt.setString(2, passwd);
+			pstmt.setString(3, vo.getName());
+			rows = pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(pstmt != null) pstmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			try {
+				if(conn != null) conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return rows;
+	}
+	
+	// Bcrypt 방식의 보안 로그인
+	public String loginCheckBcrypt(MemberVO vo) {
+		String result ="";
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DB.dbConn();
+			String sql = "SELECT * FROM member where userid=?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, vo.getUserid());
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				String passwd = rs.getString("passwd");
+				// checkpw(평문, 암호문) => 맞으면 true, 틀리면 false
+				if(BCrypt.checkpw(vo.getPasswd(), passwd)) {
+					result = rs.getString("name") + "님 환영합니다";
+				} else {
+					result = "로그인 실패...";
+				}
+			} else {
+				result = "로그인 실패...";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(rs != null) rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			try {
+				if(pstmt != null) pstmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			try {
+				if(conn != null) conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return result;
+	}
+	
+	// 비밀번호 암호화(SHA256 방식)
+	public void insertSha256(MemberVO vo) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			conn = DB.dbConn();
+			StringBuilder sql = new StringBuilder();
+			sql.append("INSERT INTO member ");
+			sql.append("(userid, passwd, name) values ");
+			sql.append("(?,?,?)");
+			pstmt = conn.prepareStatement(sql.toString());
+			pstmt.setString(1, vo.getUserid());
+			
+			SHA256 sha = SHA256.getInstance();
+			// 스트링을 바이트 배열로 변환한 후 암호문 생성
+			// 스트링.getBytes() : 스트링을 바이트배열로
+			String shaPass = sha.getSha256(vo.getPasswd().getBytes());
+			System.out.println("256 암호문 : " + shaPass);
+			// 암호화된 비밀번호 입력
+			pstmt.setString(2, shaPass);
+			pstmt.setString(3, vo.getName());
+			pstmt.executeUpdate();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(pstmt != null)pstmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			try {
+				if(conn != null) conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	// 보안 로그인(SHA256 방식)
+	public String loginCheckSha256(MemberVO vo) {
+		String result ="";
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DB.dbConn();
+			String sql = "SELECT * FROM member where userid=? passwd=?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, vo.getUserid());
+			SHA256 sha = SHA256.getInstance();
+			String shaPass = sha.getSha256(vo.getPasswd().getBytes());
+			pstmt.setString(2, shaPass);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				result = rs.getString("name") + "님 환영합니다";
+			} else {
+				result = "로그인 실패...";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(rs != null) rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			try {
+				if(pstmt != null) pstmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			try {
+				if(conn != null) conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return result;
+		
 	}
 
 }

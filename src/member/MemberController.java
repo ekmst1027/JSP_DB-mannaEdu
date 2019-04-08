@@ -69,6 +69,65 @@ public class MemberController extends HttpServlet {
 			String userid = request.getParameter("userid");
 			dao.delete(userid);
 			response.sendRedirect(context + "/ch06/member.jsp");
+		} else if(url.indexOf("login.do") != -1) {
+			String userid = request.getParameter("userid");
+			String passwd = request.getParameter("passwd");
+			System.out.println("아이디 : " + userid);
+			System.out.println("패스워드 : " + passwd);
+			MemberVO vo = new MemberVO();
+			vo.setUserid(userid);
+			vo.setPasswd(passwd);
+			String result = dao.loginCheck(vo);
+			System.out.println(result);
+			request.setAttribute("result", result);
+			String page = "/ch06/login_result.jsp";
+			RequestDispatcher rd = request.getRequestDispatcher(page);
+			rd.forward(request, response);
+		} else if(url.indexOf("join_bcrypt.do") != -1) {
+			// BCrypt 방식의 비밀번호 암호화
+			String userid = request.getParameter("userid");
+			String passwd = request.getParameter("passwd");
+			String name = request.getParameter("name");
+			MemberVO vo = new MemberVO();
+			vo.setUserid(userid);
+			vo.setPasswd(passwd);
+			vo.setName(name);
+			dao.insertBcrypt(vo);
+		} else if(url.indexOf("login_bcrypt.do") != -1) {
+			// BCrypt 방식의 보안 로그인
+			String userid = request.getParameter("userid");
+			String passwd = request.getParameter("passwd");
+			MemberVO vo = new MemberVO();
+			vo.setUserid(userid);
+			vo.setPasswd(passwd);
+			String result = dao.loginCheckBcrypt(vo);
+			request.setAttribute("result", result);
+			String page = "/ch06/login_result.jsp";
+			RequestDispatcher rd = request.getRequestDispatcher(page);
+			rd.forward(request, response);
+			
+		} else if(url.indexOf("join_sha.do") != -1) {
+			// sha256 방식의 비밀번호 암호화
+			String userid = request.getParameter("userid");
+			String passwd = request.getParameter("passwd");
+			String name = request.getParameter("name");
+			MemberVO vo = new MemberVO();
+			vo.setUserid(userid);
+			vo.setPasswd(passwd);
+			vo.setName(name);
+			dao.insertSha256(vo);
+		} else if(url.indexOf("login_sha.do") != -1) {
+			// sha256 방식의 보안 로그인
+			String userid = request.getParameter("userid");
+			String passwd = request.getParameter("passwd");
+			MemberVO vo = new MemberVO();
+			vo.setUserid(userid);
+			vo.setPasswd(passwd);
+			String result = dao.loginCheckSha256(vo);
+			request.setAttribute("result", result);
+			String page = "/ch06/login_result.jsp";
+			RequestDispatcher rd = request.getRequestDispatcher(page);
+			rd.forward(request, response);
 		}
 	}
 
