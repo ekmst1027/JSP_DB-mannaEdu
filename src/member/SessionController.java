@@ -26,12 +26,12 @@ public class SessionController extends HttpServlet {
 			vo.setUserid(userid);
 			vo.setPasswd(passwd);
 			System.out.println(vo);
-			String page = "/ch07/session_login.jsp";	// 로그인 페이지 
+			String page = "/ch07/session_login.jsp?message=error";	// 로그인 페이지 
 			
 			// BCrypt 방식의 보안 로그인
 			String result = dao.loginCheckBcrypt(vo);
-			request.setAttribute("result", result);
-			if(!result.equals("로그인 실패")) {
+			request.setAttribute("result", request.getAttribute("result"));
+			if(!result.equals("로그인 실패...")) {
 				HttpSession session = request.getSession();	// 세션 객체 생성 
 				session.setAttribute("userid", userid);	// 세션변수 저장
 				session.setAttribute("message", result);

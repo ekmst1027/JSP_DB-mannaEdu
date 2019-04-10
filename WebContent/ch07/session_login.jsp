@@ -17,12 +17,29 @@
 			</tr>
 			<tr>
 				<td>비밀번호</td>
-				<td><input name="password" id="passwd"></td>
+				<td><input type="password" id="passwd" name="passwd"></td>
 			</tr>		
 			<tr>
 				<td colspan="2" align="center"><input type="submit" id="btnLogin" value="로그인"></td>
 			</tr>
 		</table>
+		<%
+		String message = request.getParameter("message");
+		if(message != null && message.equals("logout")) {
+		%>
+			<div style="color:blue;">로그아웃되었습니다.</div>
+		<%
+		}
+		%>
+		
+		<%
+		message = request.getParameter("message");
+		if(message != null && message.equals("error")) {
+		%>
+			<div style="color:red;">아이디 또는 비밀번호가 일치하지 않습니다.</div>
+		<%
+		}
+		%>
 	</form>
 
 </body>
