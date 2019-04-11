@@ -1,0 +1,7 @@
+[
+{"id":"1", "name":"레몬", "price":"3000", "description":"레몬은 피로회복에 좋아요."},
+{"id":"2", "name":"사과", "price":"5000", "description":"사과는 비타민이 풍부해요."},
+{"id":"3", "name":"블루베리", "price":"6000", "description":"블루베리는 눈회복에 좋아요."},
+{"id":"4", "name":"체리", "price":"8000", "description":"체리는 피로회복에 좋아요."},
+{"id":"5", "name":"수박", "price":"10000", "description":"수박은 수분이 풍부해요."}
+]

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="address.xsl" ?>
+<items>	<!-- 루트노드 1개 -->
+	<person>
+		<name>kim</name>
+		<birth>1990.01.05</birth>
+		<tel>02-653-3355</tel>
+		<address>서울 영등포구 신길동</address>
+	</person>
+	<person>
+		<name>park</name>
+		<birth>1985.01.05</birth>
+		<tel>02-652-3355</tel>
+		<address>서울 마포구</address>
+	</person>
+	<person>
+		<name>hong</name>
+		<birth>1995.01.05</birth>
+		<tel>02-633-3355</tel>
+		<address>서울 강북구 미아동</address>
+	</person>
+</items>
