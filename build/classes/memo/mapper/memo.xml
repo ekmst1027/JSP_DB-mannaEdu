@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- memo.mapper 패키지의 memo.xml -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace : sql 명령어의 분류코드 -->
+<mapper namespace="memo">
+	<!-- select id="sql명령어의 변수명" resultType="레코드를 저장할 모델클래스" -->
+	<!-- 이름+메모로 찾기 -->
+	<select id="listAll" resultType="memo.vo.MemoVO">
+		SELECT idx, writer, memo, date(post_date) post_date
+		FROM memo 
+		WHERE writer like CONCAT('%',#{search},'%')
+			or memo like CONCAT('%',#{search},'%')
+		ORDER BY idx desc
+	</select>
+	
+	<!-- 이름으로 찾기, 메모로 찾기 -->
+	<select id="list" resultType="memo.vo.MemoVO">
+		SELECT idx, writer, memo, date(post_date) post_date
+		FROM memo
+		WHERE ${searchkey} like CONCAT('%',#{search},'%')
+		ORDER BY idx desc
+	</select>
+	
+	<insert id="insert"> <!-- parameterType="memo.vo.MemoVO(매개변수의 자료형" 생략 가능 -->
+		INSERT INTO memo(writer, memo)
+		<!-- 샵{변수명} => 따옴표 붙임, 달러{변수명} => 따옴표 없음 --> 
+		VALUES(#{writer}, #{memo})
+	</insert>
+	
+	<select id="view" resultType="memo.vo.MemoVO">
+		SELECt *
+		FROM memo
+		WHERE idx = #{idx}
+	</select>
+	
+	<update id="update">
+		UPDATE memo 
+		SET writer = #{writer}, memo=#{memo}
+		WHERE idx = #{idx}
+	</update>
+	
+	<delete id="delete">
+		DELETE FROM memo
+		WHERE idx = #{idx}
+	</delete>
+</mapper>
