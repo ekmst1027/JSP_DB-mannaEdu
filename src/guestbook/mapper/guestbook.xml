@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="guestbook">
+
+	<select id="gbList" resultType="guestbook.vo.GuestBookVO">
+		SELECT * 
+		FROM guestbook
+		WHERE ${searchkey} like CONCAT('%', #{search}, '%')
+		ORDER BY idx desc
+	</select>
+	
+	<select id="gbListAll" resultType="guestbook.vo.GuestBookVO">
+		SELECT * 
+		FROM guestbook
+		WHERE name like CONCAT('%', #{search}, '%')
+			or content like CONCAT('%', #{search}, '%')
+		ORDER BY idx desc
+	</select>
+	
+	<!-- 비밀번호가 맞으면 1, 틀리면 0을 리턴하는 코드 -->
+	<select id="passwdCheck" resultType="int">
+		SELECT COUNT(*)
+		FROM guestbook
+		WHERE idx = #{idx} and passwd = #{passwd}
+	</select>
+	
+	<select id="gbDetail" resultType="guestbook.vo.GuestBookVO">
+		SELECT * 
+		FROM guestbook
+		WHERE idx = #{idx}
+	</select>
+	
+	<update id="gbUpdate" parameterType="guestbook.vo.GuestBookVO">
+		UPDATE guestbook
+		SET name = #{name}, 
+			email = #{email}, 
+			passwd = #{passwd}, 
+			content = #{content}
+		WHERE idx = #{idx}
+	</update>
+	
+	<delete id="gbDelete">
+		DELETE FROM guestbook
+		WHERE idx = #{idx}
+	</delete>
+	
+	<insert id="gbInsert">
+		INSERT INTO guestbook(name, email, passwd, content)
+		VALUES ( #{name}, #{email}, #{passwd}, #{content} )
+	</insert>
+	
+</mapper>
