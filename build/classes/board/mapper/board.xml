@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- memo.mapper 패키지의 memo.xml -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace : sql 명령어의 분류코드 -->
+<mapper namespace="board">
+	<select id="list" resultType="board.vo.BoardVO">
+		SELECT num, writer, subject, reg_date, readcount,
+			filename, filesize, down, ref, re_step, re_level
+		FROM board
+		ORDER BY num desc
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO BOARD(writer, subject, passwd, ref, re_step, 
+							re_level, content, ip, filename, filesize)
+		VALUES (
+				#{writer},
+				#{subject},
+				#{passwd},
+				1,
+				#{re_step},
+				#{re_level},
+				#{content},
+				#{ip},
+				#{filename},
+				#{filesize}
+							)
+	</insert>
+</mapper>
