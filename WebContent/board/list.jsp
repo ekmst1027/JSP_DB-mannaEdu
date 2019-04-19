@@ -30,13 +30,19 @@ $(function() {
 			<th>다운로드</th>
 		</tr>
 		<c:forEach var="vo" items="${list }"> <!-- var="개별값" items="집합" -->
-			<tr>
+			<tr align="center">
 				<td>${vo.num }</td>	<!-- 실제로는 vo.getNum()이 호출됨 -->
 				<td>${vo.writer }</td>
-				<td>${vo.subject }</td>
+				<td><a href="${path }/board_servlet/view.do?num=${vo.num}">${vo.subject }</a></td>
 				<td>${vo.reg_date }</td>
 				<td>${vo.readcount }</td>
-				<td>${vo.filename }</td>
+				<td>
+					<c:if test="${vo.filesize > 0 }">
+						<a href="${path }/board_servlet/download.do?num=${vo.num }">
+							<img src="../images/file.gif">
+						</a>
+					</c:if>
+				</td>
 				<td>${vo.down }</td>
 			</tr>
 		</c:forEach>
