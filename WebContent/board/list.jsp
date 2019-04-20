@@ -33,7 +33,14 @@ $(function() {
 			<tr align="center">
 				<td>${vo.num }</td>	<!-- 실제로는 vo.getNum()이 호출됨 -->
 				<td>${vo.writer }</td>
-				<td><a href="${path }/board_servlet/view.do?num=${vo.num}">${vo.subject }</a></td>
+				<td>
+					<a href="${path }/board_servlet/view.do?num=${vo.num}">
+						${vo.subject }
+					</a>
+					<c:if test="${vo.comment_count > 0 }">
+						[ ${vo.comment_count } ]					
+					</c:if>
+				</td>
 				<td>${vo.reg_date }</td>
 				<td>${vo.readcount }</td>
 				<td>

@@ -7,12 +7,14 @@
 <mapper namespace="board">
 	<select id="list" resultType="board.vo.BoardVO">
 		SELECT num, writer, subject, reg_date, readcount,
-			filename, filesize, down, ref, re_step, re_level
-		FROM board
+			filename, filesize, down, ref, re_step, re_level,
+			(SELECT COUNT(*) FROM board_comment WHERE board_num = b.num) comment_count
+		FROM board b
 		WHERE `show` = 'y'
-		ORDER BY num desc
+		ORDER BY ref desc, re_step asc;
 	</select>
 	
+	<!-- 원글 쓰기 -->
 	<insert id="insert">
 		INSERT INTO BOARD(writer, subject, passwd, ref, re_step, 
 							re_level, content, ip, filename, filesize)
@@ -20,7 +22,7 @@
 				#{writer},
 				#{subject},
 				#{passwd},
-				1,
+				#{num},
 				#{re_step},
 				#{re_level},
 				#{content},
@@ -28,6 +30,31 @@
 				#{filename},
 				#{filesize}
 							)
+	</insert>
+	
+	<!-- 답글 쓰기 -->
+	<insert id="reply">
+		INSERT INTO BOARD(writer, subject, passwd, ref, re_step, 
+							re_level, content, ip, filename, filesize)
+		VALUES (
+				#{writer},
+				#{subject},
+				#{passwd},
+				#{ref},
+				#{re_step},
+				#{re_level},
+				#{content},
+				#{ip},
+				#{filename},
+				#{filesize}
+							)
+	</insert>
+	
+	<!-- 답글의 출력 순서 조정 -->
+	<insert id="updateStep">
+		UPDATE board
+		SET re_step = re_step + 1
+		WHERE ref = #{ref} and re_step >= #{re_step}
 	</insert>
 	
 	<!-- 게시물 번호에 해당하는 첨부파일 이름 -->
@@ -81,6 +108,20 @@
 		SET `show` = 'n'
 		WHERE num = #{num}
 	</update>
+	
+	<!-- 댓글 쓰기 -->
+	<insert id="commentAdd">
+		INSERT INTO board_comment (board_num, writer, content)
+		VALUES (#{board_num}, #{writer}, #{content})
+	</insert>
+	
+	<!-- 댓글 목록 -->
+	<select id="commentList" resultType="board.vo.BoardCommentVO">
+		SELECT * 
+		FROM board_comment
+		WHERE board_num = #{board_num}
+		ORDER BY comment_num
+	</select>
 	
 	
 </mapper>

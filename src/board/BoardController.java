@@ -18,6 +18,7 @@ import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
 import board.dao.BoardDAO;
+import board.vo.BoardCommentVO;
 import board.vo.BoardVO;
 import common.Constants.Constants;
 
@@ -293,6 +294,81 @@ public class BoardController extends HttpServlet {
 			// 목록으로 이동
 			String page = "/board_servlet/list.do";
 			response.sendRedirect(request.getContextPath() + page);
+			
+		} else if(url.indexOf("commentList.do") != -1) {
+			// 게시물 번호
+			int num = Integer.parseInt(request.getParameter("num"));
+			// 댓글 목록이 넘어옴
+			List<BoardCommentVO> list = dao.commentList(num);
+			// 출력페이지에서 읽을 수 있도록 request 영역에 저장
+			request.setAttribute("list", list);
+			// 화면 전환
+			String page = "/board/comment_list.jsp";
+			RequestDispatcher rd = request.getRequestDispatcher(page);
+			rd.forward(request, response);
+			
+		} else if(url.indexOf("commentAdd.do") != -1) {
+			// view.jsp에서 넘어온 값들을 vo에 저장
+			BoardCommentVO vo = new BoardCommentVO();
+			int board_num = Integer.parseInt(request.getParameter("board_num"));
+			String writer = request.getParameter("writer");
+			String content = request.getParameter("content");
+			vo.setBoard_num(board_num);
+			vo.setWriter(writer);
+			vo.setContent(content);
+			// 레코드가 추가됨
+			dao.commentAdd(vo);
+			// 실행이 끝나면 view.jsp의 콜백함수(success)로 넘어감
+			
+		} else if(url.indexOf("reply.do") != -1) {
+			// 게시물 번호 조회
+			int num = Integer.parseInt(request.getParameter("num"));
+			
+			// 게시물 내용을 vo로 받음
+			BoardVO vo = dao.view(num, false);
+			
+			// 답변 작성의 편의를 위해 reply.jsp 페이지에 vo를 전달
+			vo.setContent("====게시물의 내용====\n" + vo.getContent());
+			request.setAttribute("vo", vo);
+			String page = "/board/reply.jsp";
+			RequestDispatcher rd = request.getRequestDispatcher(page);
+			rd.forward(request, response);
+			
+		} else if(url.indexOf("insertReply.do") != -1) {
+			// 원글의 게시물번호(답글의 대상)
+			int num = Integer.parseInt(request.getParameter("num"));
+			
+			// 원글 내용
+			BoardVO vo = dao.view(num, false);
+			int ref = vo.getRef();	// 답변 그룹 번호
+			int re_step = vo.getRe_step() + 1;	// 출력순번
+			int re_level = vo.getRe_level() + 1;	// 답변 단계
+			
+			// 답변 내용
+			String writer = request.getParameter("writer");
+			String subject = request.getParameter("subject");
+			String content = request.getParameter("content");
+			String passwd = request.getParameter("passwd");
+			
+			vo.setWriter(writer);
+			vo.setSubject(subject);
+			vo.setContent(content);
+			vo.setPasswd(passwd);
+			vo.setRef(ref);
+			vo.setRe_level(re_level);
+			vo.setRe_step(re_step);
+			// 첨부파일 관련 정보
+			vo.setFilename("-");
+			vo.setFilesize(0);
+			vo.setDown(0);
+			// 답글 순서 조정
+			dao.updateStep(ref, re_step);
+			// 답글 쓰기
+			dao.reply(vo);
+			// 목록으로 이동
+			String page = "/board_servlet/list.do";
+			response.sendRedirect(request.getContextPath() + page);
+			
 		}
 	}
 

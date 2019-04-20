@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.ibatis.session.SqlSession;
 
+import board.vo.BoardCommentVO;
 import board.vo.BoardVO;
 import sqlmap.MybatisManager;
 
@@ -169,5 +170,77 @@ public class BoardDAO {
 		}
 	}
 	
+	// 댓글 목록 리턴
+	public List<BoardCommentVO> commentList(int num) {
+		List<BoardCommentVO> list = null;
+		SqlSession session = null;
+		try {
+			// mybatis 실행 객체 생성
+			session = MybatisManager.getInstance().openSession();
+			// board 네임스페이스의 commentList 쿼리 실행
+			list = session.selectList("board.commentList", num);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(session != null) session.close();	// mybatis 실행 객체 닫기
+		}
+		
+		return list;
+	}
+	
+	// 댓글 추가
+	public void commentAdd(BoardCommentVO vo) {
+		SqlSession session = null;
+		try {
+			session = MybatisManager.getInstance().openSession();
+			session.insert("board.commentAdd", vo);
+			session.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(session != null) session.close();	// mybatis 리소스 정리
+		}
+	}
+	
+	// 답변글 등록
+	public void reply(BoardVO vo) {
+		SqlSession session = null;
+		try {
+			// mybatis 실행 객체 생성
+			session = MybatisManager.getInstance().openSession();
+			session.insert("board.reply", vo);	// 레코드 추가
+			session.commit();	// 수동 커밋
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(session != null) session.close(); // 리소스 정리
+		}
+	}
+	
+	// 답글의 순서 조정(ref - 게시물 그룹 번호, re_step - 게시물 그룹 순번)
+	public void updateStep(int ref, int re_step) {
+		SqlSession session = null;
+		try {
+			session = MybatisManager.getInstance().openSession();
+			BoardVO vo = new BoardVO();
+			vo.setRef(ref);
+			vo.setRe_step(re_step);
+			session.update("board.updateStep", vo);
+			session.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(session != null) session.close();
+		}
+	}
 	
 }
+
+
+
+
+
+
+
+
+
