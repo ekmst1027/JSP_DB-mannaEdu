@@ -5,7 +5,7 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 <configuration>
 	<!-- 알리아스 설정 -->
 	<typeAliases>
-		<!-- typeAlias type="전체경" alias="별칭" -->
+		<!-- typeAlias type="전체경로" alias="별칭" -->
 		<typeAlias type="page.vo.EmpVO" alias="e"/>
 	</typeAliases>
 	<!-- db연결 참조코드 -->
@@ -24,5 +24,6 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 		<mapper resource="guestbook/mapper/guestbook.xml" />
 		<mapper resource="page/mapper/emp.xml" />
 		<mapper resource="board/mapper/board.xml" />
+		<mapper resource="shop/mapper/product.xml" />
 	</mappers>
 </configuration>
