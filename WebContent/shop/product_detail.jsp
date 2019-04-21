@@ -8,6 +8,7 @@
 <%@ include file="../include/header.jsp" %>
 </head>
 <body>
+<%@ include file="../include/menu.jsp" %>
 	<h2>상품정보</h2>
 	<table>
 		<tr>
