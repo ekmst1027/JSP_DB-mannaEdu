@@ -68,7 +68,28 @@ public class BoardController extends HttpServlet {
 					filename = multi.getFilesystemName(file1);	// 파일 이름
 					File f1 = multi.getFile(file1);
 					if(f1 != null) {
+						// 파일의 확장자 검사
 						filesize = (int)f1.length();	// 파일 크기
+						if(filename != null) {
+							// 파일의 확장자 검사
+							int start = filename.lastIndexOf(".") + 1;
+							if (start != -1) {
+								String ext = filename.substring(start, filename.length());
+								System.out.println(ext);
+								if(ext.equals("jsp") || ext.equals("exe")) {
+									try {
+										System.out.println("금지된 파일입니다...");
+										f1.delete();
+									} catch (Exception e) {
+										e.printStackTrace();
+									}
+									System.out.println("삭제됨...");
+									response.sendRedirect(request.getContextPath() + "/board/write.jsp?message=error");
+									return;
+								}
+							}
+						}
+						
 					}
 				}
 			} catch (Exception e) {

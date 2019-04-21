@@ -9,6 +9,17 @@
 <script>
 $(function() {
 	$("#btnSave").click(function() {
+		// 첨부파일의 확장자 체크
+		var filename = form1.file1.value;	// 첨부파일의 이름
+		var start = filename.lastIndexOf(".") + 1;	// 마지막 마침표의 위치
+		if(start != -1) {
+			var ext = filename.substring(start, filename.length);
+			if(ext == "jsp" || ext == "exe" || ext == "jar") {
+				alert("업로드할 수 없는 파일입니다.");
+				return;
+			}
+		}
+		// 폼데이터를 서버에 제출
 		document.form1.submit();
 	});
 });
@@ -34,7 +45,12 @@ $(function() {
 			</tr>
 			<tr>
 				<td align="center">첨부파일</td>
-				<td><input type="file" name="file1"></td>
+				<td>
+					<input type="file" name="file1">
+					<c:if test="${param.message == 'error' }">
+						<span style="color:red;">업로드할 수 없는 파일입니다.</span>
+					</c:if>					
+				</td>
 			</tr>
 			<tr>
 				<td align="center">비밀번호</td>

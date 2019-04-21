@@ -32,6 +32,10 @@
 							)
 	</insert>
 	
+	<update id="ref_update">
+	
+	</update>
+	
 	<!-- 답글 쓰기 -->
 	<insert id="reply">
 		INSERT INTO BOARD(writer, subject, passwd, ref, re_step, 
