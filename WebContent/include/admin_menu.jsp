@@ -2,8 +2,9 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<a href="${path }/product_servlet/list.do">상품목록</a>
-<a href="${path }/shop/product_write.jsp">상품등록</a>
+<a href="${path }/product_servlet/list.do">상품목록</a>	|
+<a href="${path }/shop/product_write.jsp">상품등록</a>	|
+<a href="${path }/pdf_servlet/list.do">PDF</a>	|
 <c:choose>
 	<c:when test="${sessionScope.admin_userid == null }">
 		<a href="${path }/admin_servlet/login.do">관리자 로그인</a>
