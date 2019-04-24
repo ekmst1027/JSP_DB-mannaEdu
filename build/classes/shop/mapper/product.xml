@@ -16,5 +16,32 @@
 		FROM product
 		WHERE product_id = #{product_id}
 	</select>
+	
+	<!-- 상품 추가 -->
+	<insert id="insert_product">
+		INSERT INTO product
+		VALUES ( (SELECT a.product_id FROM (SELECT IFNULL(MAX(product_id) + 1, 1) product_id FROM PRODUCT) a),
+			#{product_name},
+			#{price},
+			#{description},
+			#{picture_url}
+			)
+	</insert>
+	
+	<!-- 상품 수정 -->
+	<update id="update_product">
+		UPDATE product
+		SET product_name = #{product_name},
+			price = #{price},
+			description = #{description},
+			picture_url = #{picture_url}
+		WHERE product_id = #{product_id}
+	</update>
+	
+	<!-- 상품 삭제 -->
+	<delete id="delete_product">
+		DELETE FROM product
+		WHERE product_id = #{product_id}
+	</delete>
 
 </mapper>

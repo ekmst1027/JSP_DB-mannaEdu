@@ -9,6 +9,7 @@ import sqlmap.MybatisManager;
 
 public class ProductDAO {
 	
+	// 상품목록을 리스트에 저장하여 리턴하는 코드
 	public List<ProductVO> listProduct() {
 		// mybatis 객체
 		SqlSession session = MybatisManager.getInstance().openSession();
@@ -26,6 +27,31 @@ public class ProductDAO {
 		ProductVO vo = session.selectOne("product.detail_product", product_id);
 		session.close();
 		return vo;
+	}
+	
+	// 상품 등록
+	public void insertProduct(ProductVO vo) {
+		SqlSession session = MybatisManager.getInstance().openSession();
+		session.insert("product.insert_product", vo);
+		session.commit();
+		session.close();
+	}
+	
+	// 상품 수정
+	public void updateProduct(ProductVO vo) {
+		SqlSession session = MybatisManager.getInstance().openSession();
+		session.update("product.update_product", vo);
+		session.commit();
+		session.close();
+		
+	}
+	
+	// 상품 삭제
+	public void deleteProduct(int product_id) {
+		SqlSession session = MybatisManager.getInstance().openSession();
+		session.delete("product.delete_product", product_id);
+		session.commit();
+		session.close();
 	}
 
 }

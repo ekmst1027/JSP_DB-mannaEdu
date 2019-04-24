@@ -20,7 +20,9 @@ public class ProductController extends HttpServlet {
 	// get방식 호출
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String url = request.getRequestURI();	// 요청받은 주소
+		String path = request.getContextPath();	// 컨텍스트 패스
 		ProductDAO dao = new ProductDAO();
+		
 		if(url.indexOf("list.do") != -1) {
 			List<ProductVO> items = dao.listProduct();	// 상품 목록
 			request.setAttribute("list", items);	// 저장
@@ -38,7 +40,8 @@ public class ProductController extends HttpServlet {
 			// 포워딩되면서 출력됨
 			RequestDispatcher rd = request.getRequestDispatcher("/shop/product_detail.jsp");
 			rd.forward(request, response);
-		}
+		
+		} 
 	}
 
 	// post방식 호출

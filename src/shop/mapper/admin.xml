@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace : sql 명령어의 분류코드 -->
+<mapper namespace="admin">
+	<!-- 관리자 로그인 체크 -->
+	<select id="login_check" resultType="String">
+		SELECT name
+		FROM admin
+		WHERE userid = #{userid} and passwd = #{passwd}
+	</select>
+
+</mapper>
