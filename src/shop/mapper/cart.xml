@@ -56,6 +56,15 @@
 		WHERE cart_id = #{cart_id}
 		<!-- WHERE userid = #{userid} and product_id = #{product_id} -->
 	</update>
+	
+	<!-- 상품별 장바구니 금액 통계 -->
+	<select id="cart_money" resultType="shop.vo.CartVO">
+		SELECT product_name, sum(price * amount) money
+		FROM cart c, product p
+		WHERE c.product_id = p.product_id
+		GROUP BY product_name
+		ORDER BY product_name
+	</select>
 </mapper>
 
 

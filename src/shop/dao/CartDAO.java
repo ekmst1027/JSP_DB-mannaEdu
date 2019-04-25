@@ -62,6 +62,14 @@ public class CartDAO {
 		session.close();
 	}
 	
+	// 상품별 장바구니 금액 통계
+	public List<CartVO> cartMoney() {
+		SqlSession session = MybatisManager.getInstance().openSession();
+		List<CartVO> items = session.selectList("cart.cart_money");
+		session.close();
+		return items;
+	}
+	
 }
 
 
