@@ -54,19 +54,29 @@ function list() {
 </script>
 </head>
 <body>
-	<h2>한줄메모장</h2>
-	이름 : <input id="writer" size="10">
-	메모 : <input id="memo" size="40">
-	<input type="button" id="btnSave" value="확인">
+	<h2 class="text-center">한줄메모장</h2>
+	<!-- 입력 -->
+	<div class="col-sm-2">
+		<input id="writer" class="form-control" placeholder="이름">
+	</div>
+	<div class="col-sm-4">
+		<input id="memo" class="form-control" placeholder="메모">
+		<input type="button" id="btnSave" value="확인" class="btn btn-primary">
+	</div>
 	
-	<br>
-	<select id="searchkey">
-		<option value="writer">이름</option>
-		<option value="memo">메모</option>
-		<option value="writer_memo">이름+메모</option>
-	</select>
-	<input type="text" id="search" value="${search }">
-	<input type="button" id="btnSearch" value="조회">
+	<p></p>
+	<!-- 검색 -->
+	<div class="col-sm-2">
+		<select id="searchkey">
+			<option value="writer">이름</option>
+			<option value="memo">메모</option>
+			<option value="writer_memo">이름+메모</option>
+		</select>
+	</div>
+	<div class="col-sm-4">
+		<input type="text" id="search" value="${search }">
+		<input type="button" id="btnSearch" value="조회">
+	</div>
 	
 	<div id="result"></div><!-- 메모 내용이 출력될 영역 -->
 </body>
