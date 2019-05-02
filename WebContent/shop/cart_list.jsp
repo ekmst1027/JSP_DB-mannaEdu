@@ -34,7 +34,7 @@ $(function() {
 			</tr>
 			<c:forEach var="row" items="${list }">
 				<tr>
-					<td>${row.product_name }</td>
+					<td><span>${row.product_name }</span></td>
 					<td>${row.price }</td>
 					<td>
 						<input type="number" sylte="width: 50px;"
